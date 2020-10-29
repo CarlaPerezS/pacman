@@ -1,13 +1,10 @@
 """Pacman, classic arcade game.
-
 Exercises
-
 1. Change the board.
 2. Change the number of ghosts.
 3. Change where pacman starts.
 4. Make the ghosts faster/slower.
 5. Make the ghosts smarter.
-
 """
 
 from random import choice
@@ -20,28 +17,29 @@ path = Turtle(visible=False)
 writer = Turtle(visible=False)
 aim = vector(5, 0)
 pacman = vector(-40, -80)
+sp=10
 ghosts = [
-    [vector(-180, 160), vector(5, 0)],
-    #[vector(-180, -160), vector(0, 5)],
-    #[vector(100, 160), vector(0, -5)],
-    #[vector(100, -160), vector(-5, 0)],
+    [vector(-180, 160), vector(sp, 0)],
+    [vector(-180, -160), vector(0, sp)],
+    [vector(100, 160), vector(0, -sp)],
+    [vector(100, -160), vector(-sp, 0)],
 ]
 tiles = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
     0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0,
+    0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0,
     0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+    0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0,
+    0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0,
+    0, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0,
+    0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0,
+    0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
     0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0,
-    0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0,
-    0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
-    0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0,
-    0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-    0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0,
-    0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0,
-    0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-    0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
+    0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0,
+    0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0,
     0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0,
-    0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0,
+    0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0,
     0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0,
     0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
     0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
@@ -131,10 +129,10 @@ def move():
             point.move(course)
         else:
             options = [
-                vector(5, 0),
-                vector(-5, 0),
-                vector(0, 5),
-                vector(0, -5),
+                vector(sp, 0),
+                vector(-sp, 0),
+                vector(0, sp),
+                vector(0, -sp),
             ]
             
 
@@ -151,51 +149,34 @@ def move():
             goff = offset(point)
             gcol = goff%20
             gren = math.floor(goff/20)
-
-
             if(pcol < gcol and pren < gren):
                 #elegir arriba o a la izq
                 options = [
-                    vector(-5, 0),
-                    vector(0, 5),
+                    vector(-sp, 0),
+                    vector(0, sp),
                 ]
-                print("Estoy yendo hacia arriba/izq")
-            
-            if(pcol > gcol and pren < gren):
+            if (pcol > gcol and pren < gren):
                 #elegir arriba o a la der
                 options = [
-                    vector(5, 0),
-                    vector(0, 5),
-                ]
-                print("Estoy yendo hacia arriba/der")
-            
+                    vector(sp, 0),
+                    vector(0, sp),
+                ] 
             if(pcol < gcol and pren > gren):
                 #elegir abajo o a la izq
                 options = [
-                    vector(-5, 0),
-                    vector(0, -5),
+                    vector(-sp, 0),
+                    vector(0, -sp),
                 ]
-                print("Estoy yendo hacia abajo/izq")
-            
             if(pcol > gcol and pren > gren):
                 #elegir abajo o a la der
                 options = [
-                    vector(5, 0),
-                    vector(0, -5),
+                    vector(sp, 0),
+                    vector(0, -sp),
                 ]
-                print("Estoy yendo hacia abajo/der")
-            
-
             #escoger alguna opción
             plan = choice(options)
-
-
             course.x = plan.x
             course.y = plan.y
-
-
-
-
         up()
         goto(point.x + 10, point.y + 10)
         dot(20, 'red')
@@ -206,7 +187,7 @@ def move():
         if abs(pacman - point) < 20:
             return
 
-    ontimer(move, 100)
+    ontimer(move, 50)
 
 def change(x, y):
     "Change pacman aim if valid."
